@@ -1,24 +1,70 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# FURIMAのER図
 
-Things you may want to cover:
+## テーブル設計
 
-* Ruby version
+### users テーブル
 
-* System dependencies
+| Column               | Type   | Options                   |
+| ------------------- | ------ | ------------------------- |
+| nick_name           | string | null: false               |
+| email               | string | null: false, unique: true |
+| encrypted_password  | string | null: false               |
+| last_name           | string | null: false               |
+| first_name          | string | null: false               |
+| last_name_katakana  | string | null: false               |
+| first_name_katakana | string | null: false               |
+| birth_date          | date   | null: false               |
 
-* Configuration
+### Association
+- has_many :items
+- has_many :orders
 
-* Database creation
+### items テーブル
 
-* Database initialization
+| Column                 | Type       | Options                        |
+| --------------------- | ---------- | ------------------------------ |
+| description           | text       | null: false                    |
+| item_name             | string     | null: false                    |
+| category_id           | integer    | null: false                    |
+| sales_status_id       | integer    | null: false                    |
+| user                  | references | null: false, foreign_key: true |
+| price                 | integer    | null: false                    |
+| shipping_fee_status_id| integer    | null: false                    |
+| prefecture_id         | integer    | null: false                    |
+| scheduled_delivery_id | integer    | null: false                    |
 
-* How to run the test suite
+### Association
+- belongs_to :user
+- has_one :order
 
-* Services (job queues, cache servers, search engines, etc.)
+### orders テーブル
 
-* Deployment instructions
+| Column | Type       | Options                        |
+| ------ | ---------- | ------------------------------ |
+| user   | references | null: false, foreign_key: true |
+| item   | references | null: false, foreign_key: true |
 
-* ...
+### Association
+- belongs_to :user
+- belongs_to :item
+- has_one :shipping_address
+
+### shipping_addresses テーブル
+
+| Column        | Type       | Options                        |
+| ------------- | ---------- | ------------------------------ |
+| post_number   | string     | null: false                    |
+| prefecture_id | integer    | null: false                    |
+| town_city_name| string     | null: false                    |
+| block_name    | string     | null: false                    |
+| building_name | string     |                                |
+| phone_number  | string     | null: false                    |
+| order         | references | null: false, foreign_key: true |
+
+### Association
+- belongs_to :order
+
+※imageはActive Storageで実装するため、テーブルは作成しません。
+※category_id, sales_status_id, shipping_fee_status_id, prefecture_id, scheduled_delivery_idはActive Hashで実装するため、integer型で設計しています。
